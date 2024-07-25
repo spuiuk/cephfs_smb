@@ -6,3 +6,20 @@ By default a multi-host cluster is setup using vagrant to setup 3 virtual machin
 
 We can also setup a single host cluster to use in a resource constrained system by creating a file "devel.mk" with the content
 Type = singlehost
+
+## Usage:
+
+To start a cluster
+```
+make start
+```
+
+To stop the cluster
+```
+make stop
+```
+
+To login to the main host of the cluster
+```
+make ssh
+```
