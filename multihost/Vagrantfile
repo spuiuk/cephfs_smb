@@ -1,0 +1,41 @@
+nodes = [
+  {:hostname => 'mycephfs11', :ip => '192.168.145.11', :box => 'generic/centos9s'},
+  {:hostname => 'mycephfs12', :ip => '192.168.145.12', :box => 'generic/centos9s'},
+  {:hostname => 'mycephfs13', :ip => '192.168.145.13', :box => 'generic/centos9s'},
+]
+
+Vagrant.configure("2") do |config|
+  config.ssh.insert_key = false
+  config.ssh.forward_agent = true
+  config.ssh.insert_key = false
+
+  config.vm.provision :shell, privileged: false do |s|
+    ssh_pub_key = File.readlines("ssh_key.pub").first.strip
+    s.inline = <<-SHELL
+      echo #{ssh_pub_key} >> /home/$USER/.ssh/authorized_keys
+      sudo bash -c "echo #{ssh_pub_key} >> /root/.ssh/authorized_keys"
+      sudo /usr/bin/chmod 0700 /root/.ssh/authorized_keys
+    SHELL
+  end
+
+  nodes.each do |node|
+    config.vm.define node[:hostname] do |nodeconfig|
+      nodeconfig.vm.box = node[:box]
+      nodeconfig.vm.hostname = node[:hostname]
+      nodeconfig.vm.network :private_network, ip: node[:ip]
+
+      memory = node[:ram] ? node[:ram] : 2048;
+      nodeconfig.vm.provider :libvirt do |lv|
+        #lv.storage_pool_name = storage_pool_name
+        lv.driver = "kvm"
+        lv.uri = "qemu:///system"
+        lv.memory = memory
+        lv.graphics_type = "none"
+	lv.storage :file, :size => '6G'
+	#lv.storage :file, :device => "vdb", :size => '6G'
+      end
+    end
+  end
+
+end
+

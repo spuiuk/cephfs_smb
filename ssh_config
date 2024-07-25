@@ -1,0 +1,4 @@
+Host mycephfs??
+	IdentityFile ./ssh_key
+	StrictHostKeyChecking no
+	UpdateHostKeys yes
