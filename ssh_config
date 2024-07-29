@@ -1,4 +1,17 @@
-Host mycephfs??
+Host mycephfs11
+	HostName 192.168.145.11
+	IdentityFile ./ssh_key
+	StrictHostKeyChecking no
+	UpdateHostKeys yes
+
+Host mycephfs12
+	HostName 192.168.145.12
+	IdentityFile ./ssh_key
+	StrictHostKeyChecking no
+	UpdateHostKeys yes
+
+Host mycephfs13
+	HostName 192.168.145.13
 	IdentityFile ./ssh_key
 	StrictHostKeyChecking no
 	UpdateHostKeys yes
