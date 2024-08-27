@@ -12,11 +12,21 @@ ceph -s
 ceph orch host ls
 ```
 
+### List Cephfs volumes
+```
+ceph fs volume ls
+```
+
 ### Create Cephfs volume
 ```
 ceph fs volume create mycephfs
 ```
 Creates cephfs volume mycephfs
+
+### List subvolumes for a volume
+```
+ceph fs subvolume ls mycephfs
+```
 
 ### Create Cephfs subvolume
 ```
