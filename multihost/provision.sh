@@ -27,6 +27,7 @@ while ! ceph -s|grep HEALTH_OK; do sleep 5; done
 ceph fs volume create mycephfs
 ceph fs subvolume create mycephfs smbshares  --mode 0777
 
+ceph mgr module enable orchestrator
 ceph mgr module enable smb
 # Perform other tasks before creating smb resources
 # This is to allow enough time for smb module to come up
