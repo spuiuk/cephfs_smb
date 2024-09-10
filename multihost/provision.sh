@@ -3,7 +3,8 @@ dnf install -y cephadm
 cephadm add-repo --dev main
 dnf update -y cephadm
 
-#export CEPHADM_IMAGE="quay.ceph.io/ceph-ci/ceph:main"
+export CEPHADM_IMAGE=${DEVEL_IMAGE}"
+echo Using image $CEPHADM_IMAGE
 cephadm install ceph-common
 export HOST_IP=192.168.145.11
 cephadm bootstrap --mon-ip=${HOST_IP} --initial-dashboard-password="x"

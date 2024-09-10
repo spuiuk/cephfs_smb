@@ -1,6 +1,11 @@
+-include ../devel.mk
+
 SSH_CONFIG := ../ssh_config
 SCP_CMD = scp -F ${SSH_CONFIG}
 SSH_CMD = ssh -F ${SSH_CONFIG}
+
+# Dev branch to use - defaults to main
+DEVEL_IMAGE ?= quay.ceph.io/ceph-ci/ceph:main
 
 ssh:
 	${SSH_CMD} root@mycephfs11
@@ -22,6 +27,6 @@ stop:
 provision:
 	${SCP_CMD} -r  ../resources root@mycephfs11:
 	${SCP_CMD} provision.sh root@mycephfs11:/tmp/provision.sh
-	${SSH_CMD} root@mycephfs11 "/bin/bash /tmp/provision.sh"
+	${SSH_CMD} root@mycephfs11 "DEVEL_IMAGE=${DEVEL_IMAGE} /bin/bash -x /tmp/provision.sh"
 
 .PHONY: ssh vagrant copy_keys start stop provision
