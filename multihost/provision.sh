@@ -25,6 +25,11 @@ done
 ceph orch apply osd --all-available-devices
 while ! ceph -s|grep HEALTH_OK; do sleep 5; done
 
+if [ ${SMB_IMAGE}x != "x" ]
+then
+	ceph config set mgr mgr/cephadm/container_image_samba ${SMB_IMAGE}
+fi
+
 ceph fs volume create mycephfs
 ceph fs subvolume create mycephfs smbshares  --mode 0777
 
