@@ -16,4 +16,7 @@ clean_keys:
 	-ssh-keygen -R mycephfs11
 	-ssh-keygen -R mycephfs12
 	-ssh-keygen -R mycephfs13
+	-ssh-keygen -R 192.168.145.11
+	-ssh-keygen -R 192.168.145.12
+	-ssh-keygen -R 192.168.145.13
 
