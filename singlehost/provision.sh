@@ -24,6 +24,7 @@ then
 fi
 
 ceph fs volume create mycephfs
+while ! ceph fs ls|grep mycephfs; do sleep 5; done
 ceph fs subvolume create mycephfs smbshares  --mode 0777
 
 ceph mgr module enable orchestrator
