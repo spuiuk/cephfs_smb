@@ -72,3 +72,25 @@ ceph smb share create mysmb smb1 mycephfs /smb1 --subvolume=smbshares
 ```
 Where mysmb is the samba cluster id within cephfs volume mycephfs.
 /smb1 is a directory within the subvolume smbshares.
+
+## Ceph config
+
+### List configuration options available
+```
+ceph config ls
+```
+
+### List daemons available
+```
+ceph orch ps
+```
+
+### List configuration options set for a daemon
+```
+ceph config show mgr.mycephfs11.crupiw
+```
+or
+```
+ceph config show-with-defaults mgr.mycephfs11.crupiw
+```
+where mgr.mycephfs11.crupiw is the daemon from the 1st column of the previous command.
