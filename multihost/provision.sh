@@ -3,7 +3,7 @@ dnf install -y cephadm
 cephadm add-repo --dev main
 dnf update -y cephadm
 
-export CEPHADM_IMAGE=${DEVEL_IMAGE}"
+export CEPHADM_IMAGE=${DEVEL_IMAGE}
 echo Using image $CEPHADM_IMAGE
 cephadm install ceph-common
 export HOST_IP=192.168.145.11
