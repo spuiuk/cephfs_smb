@@ -1,11 +1,11 @@
-+-include ../devel.mk
+-include ../devel.mk
 
 SSH_CONFIG := ../ssh_config
 SCP_CMD = scp -F ${SSH_CONFIG}
 SSH_CMD = ssh -F ${SSH_CONFIG}
 
-+# Dev branch to use - defaults to main
-+DEVEL_BRANCH ?= main
+# Dev branch to use - defaults to main
+DEVEL_BRANCH ?= main
 
 ssh:
 	${SSH_CMD} root@mycephfs11
