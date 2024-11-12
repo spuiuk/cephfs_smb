@@ -30,19 +30,27 @@ then
 	ceph config set mgr mgr/cephadm/container_image_samba ${SMB_IMAGE}
 fi
 
+# Create volume cephfs and wait until it is available
 ceph fs volume create mycephfs
 while ! ceph fs ls|grep mycephfs; do sleep 5; done
-ceph fs subvolume create mycephfs smbshares  --mode 0777
+
+# If subvolume smbshares doesn't exist, attempt to create it and wait.
+while ! ceph fs subvolume ls mycephfs|grep smbshares
+do
+	ceph fs subvolume create mycephfs smbshares  --mode 0777
+	sleep 5
+done
 
 ceph mgr module enable orchestrator
 ceph mgr module enable smb
-# Perform other tasks before creating smb resources
-# This is to allow enough time for smb module to come up
 
+# Perform other tasks before creating smb resources
 dnf install -y ceph-fuse samba-client
 mkdir /mnt-cephfs && ceph-fuse /mnt-cephfs/
 
-# Create smb resources
+# Wait for smb module to be enabled
 sleep 10
+
+# Create smb resources
 ceph smb apply -i /root/resources/smb_cluster.yml
 
