@@ -7,7 +7,16 @@ export CEPHADM_IMAGE=${DEVEL_IMAGE}
 echo Using image $CEPHADM_IMAGE
 cephadm install ceph-common
 export HOST_IP=192.168.145.11
-cephadm bootstrap --mon-ip=${HOST_IP} --initial-dashboard-password="x" --single-host-defaults
+# Prepare base bootstrap command
+BOOTSTRAP_CMD="cephadm bootstrap --mon-ip=${HOST_IP} --initial-dashboard-password='x'"
+
+# Append --shared_ceph_folder if provided
+if [ ! -z "$CEPH_SHARED_FOLDER" ]; then
+    BOOTSTRAP_CMD="$BOOTSTRAP_CMD --shared_ceph_folder=$CEPH_SHARED_FOLDER"
+fi
+
+# Run the bootstrap command
+$BOOTSTRAP_CMD
 
 cat >/root/.ssh/config <<EOF
 Host mycephfs??
