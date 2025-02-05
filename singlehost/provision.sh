@@ -43,7 +43,6 @@ do
 	sleep 5
 done
 
-ceph mgr module enable orchestrator
 ceph mgr module enable smb
 
 # Perform other tasks before creating smb resources
