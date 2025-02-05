@@ -29,4 +29,13 @@ provision:
 	${SCP_CMD} provision.sh root@mycephfs11:/tmp/provision.sh
 	${SSH_CMD} root@mycephfs11 "DEVEL_IMAGE=${DEVEL_IMAGE} SMB_IMAGE=${SMB_IMAGE} /bin/bash -x /tmp/provision.sh"
 
+_tcpdump:
+	-${SSH_CMD} root@mycephfs11 "dnf install -y tcpdump"
+	-${SSH_CMD} root@mycephfs11 "rm -f /tmp/out.pcap; tcpdump -w /tmp/out.pcap -i eth1"
+	/bin/true
+
+tcpdump: _tcpdump
+	${SCP_CMD} root@mycephfs11:/tmp/out.pcap /tmp/out.pcap
+	wireshark /tmp/out.pcap
+
 .PHONY: ssh vagrant copy_keys start stop provision
