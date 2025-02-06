@@ -27,6 +27,7 @@ EOF
 
 for host in mycephfs12 mycephfs13
 do
+	while ! ssh root@${host} /bin/true; do sleep 1; done
 	ssh-copy-id -f -i /etc/ceph/ceph.pub root@${host}
 	ssh ${host} dnf install -y podman
 	ceph orch host add ${host}
