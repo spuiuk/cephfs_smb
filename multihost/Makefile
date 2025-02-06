@@ -18,14 +18,16 @@ copy_keys:
 	${SCP_CMD} ssh_key root@mycephfs11:/root/.ssh/id_rsa
 	${SSH_CMD} root@mycephfs11 "chmod 0700 /root/.ssh/id_rsa"
 
+sync_resources:
+	${SCP_CMD} -r ../resources root@mycephfs11:resources
+
 start: vagrant copy_keys provision
 
 stop:
 	vagrant destroy -f
 	rm -rf .vagrant ssh_key ssh_key.pub
 
-provision:
-	${SCP_CMD} -r  ../resources root@mycephfs11:
+provision: sync_resources
 	${SCP_CMD} provision.sh root@mycephfs11:/tmp/provision.sh
 	${SSH_CMD} root@mycephfs11 "DEVEL_IMAGE=${DEVEL_IMAGE} SMB_IMAGE=${SMB_IMAGE} /bin/bash -x /tmp/provision.sh"
 

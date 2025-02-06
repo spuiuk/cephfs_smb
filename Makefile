@@ -20,3 +20,5 @@ clean_keys:
 	-ssh-keygen -R 192.168.145.12
 	-ssh-keygen -R 192.168.145.13
 
+sync_resources:
+	make -C ${TYPE} sync_resources
