@@ -3,6 +3,7 @@
 SSH_CONFIG := ../ssh_config
 SCP_CMD = scp -F ${SSH_CONFIG}
 SSH_CMD = ssh -F ${SSH_CONFIG}
+RSYNC_CMD = rsync -e '${SSH_CMD}'
 
 # Dev branch to use - defaults to main
 DEVEL_IMAGE ?= quay.ceph.io/ceph-ci/ceph:main
@@ -19,7 +20,7 @@ copy_keys:
 	${SSH_CMD} root@mycephfs11 "chmod 0700 /root/.ssh/id_rsa"
 
 sync_resources:
-	${SCP_CMD} -r  ../resources root@mycephfs11:
+	${RSYNC_CMD} -av  --copy-links ../resources root@mycephfs11:
 
 start: vagrant copy_keys provision
 
