@@ -21,7 +21,9 @@ do
 	ssh-copy-id -f -i /etc/ceph/ceph.pub root@${host}
 	ssh ${host} dnf install -y podman
 	ceph orch host add ${host}
+	ceph orch host label add ${host} smb
 done
+ceph orch host label add mycephfs11 smb
 
 ceph orch apply osd --all-available-devices
 while ! ceph -s|grep HEALTH_OK; do sleep 5; done
