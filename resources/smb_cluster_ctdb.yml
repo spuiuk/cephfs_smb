@@ -1,0 +1,36 @@
+resources:
+  - resource_type: ceph.smb.cluster
+    cluster_id: mysmb
+    clustering: always
+    placement:
+      label: smb
+    auth_mode: user
+    user_group_settings:
+      - source_type: resource
+        ref: ug1
+    public_addrs:
+      - address: 192.168.145.31/24
+
+  - resource_type: ceph.smb.usersgroups
+    users_groups_id: ug1
+    values:
+      users:
+        - name: test1
+          password: x
+        - name: test2
+          password: x
+      groups: []
+
+  - resource_type: ceph.smb.share
+    cluster_id: mysmb
+    share_id: mysmb-root
+    intent: present
+    name: mysmb-root
+    readonly: false
+    browseable: true
+    cephfs:
+      volume: mycephfs
+      subvolume: smbshares
+      path: /
+      provider: samba-vfs
+
