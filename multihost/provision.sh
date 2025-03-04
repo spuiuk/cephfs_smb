@@ -54,8 +54,12 @@ dnf install -y ceph-fuse samba-client
 mkdir /mnt-cephfs && ceph-fuse /mnt-cephfs/
 
 # Wait for smb module to be enabled
-sleep 10
-
+#sleep 10
 # Create smb resources
-ceph smb apply -i /root/resources/smb_cluster.yml
+# ceph smb apply -i /root/resources/smb_cluster.yml
 
+cat << EOF
+The SMB service definitions are available in ~/resources
+Select the type you need and run the command
+ceph smb apply -i ~/resources/<service definition>
+EOF
