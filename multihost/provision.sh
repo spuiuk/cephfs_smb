@@ -15,12 +15,14 @@ Host mycephfs??
 	UpdateHostKeys yes
 EOF
 
-for host in mycephfs12 mycephfs13
+for h in 12 13
 do
+	host="mycephfs${h}"
+	ip="192.168.145.${h}"
 	while ! ssh root@${host} /bin/true; do sleep 1; done
 	ssh-copy-id -f -i /etc/ceph/ceph.pub root@${host}
 	ssh ${host} dnf install -y podman
-	ceph orch host add ${host}
+	ceph orch host add ${host} ${ip}
 	ceph orch host label add ${host} smb
 done
 ceph orch host label add mycephfs11 smb
