@@ -1,4 +1,5 @@
 -include devel.mk
+-include samba_dev.mk
 
 # Types: singlehost, multihost
 TYPE ?= multihost

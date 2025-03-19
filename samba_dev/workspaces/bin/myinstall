@@ -1,0 +1,5 @@
+#!/bin/sh
+
+cd /root/samba_cephfs/samba
+make install
+

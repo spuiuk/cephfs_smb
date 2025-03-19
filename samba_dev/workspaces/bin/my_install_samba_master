@@ -1,0 +1,6 @@
+#cd /etc/yum.repos.d/ && wget https://artifacts.ci.centos.org/samba/pkgs/master/centos/samba-nightly-master.repo
+
+dnf remove -y samba-client-libs
+dnf install -y samba samba-client samba-client-libs samba-test samba-vfs-cephfs libcephfs-devel
+
+cd /etc/samba && mv -f smb.conf.rpmsave smb.conf
