@@ -1,0 +1,33 @@
+if rpm -q samba >/dev/null
+then
+	dnf remove -y samba
+fi
+
+mkdir /mycluster 2>/dev/null
+if ! mount|grep "ceph-fuse on /mnt-cephfs"
+then
+	ceph-fuse /mnt-cephfs
+fi
+
+rm -f /cephfs-fuse
+volume_path=`find /mnt-cephfs/volumes/_nogroup/samba/[a-z0-9]* -maxdepth 0`
+ln -s ${volume_path} /cephfs-fuse
+
+if [ -a /workspaces/samba_cephfs/others/smb.conf ]
+then
+	cp -f /workspaces/samba_cephfs/others/smb.conf /etc/samba/smb.conf
+fi
+
+if ! [ -a /usr/sbin/smbd ]
+then
+	myinstall
+fi
+cp -f /root/samba/bin/modules/vfs/ceph.so /usr/lib64/samba/vfs/ceph.so
+if [ -a /root/samba/bin/modules/vfs/ceph_new.so ]
+then
+	cp -f /root/samba/bin/modules/vfs/ceph_new.so /usr/lib64/samba/vfs/ceph_new.so
+fi
+
+cp -f /root/samba/bin/smbtorture /usr/bin/smbtorture
+
+/root/samba/bin/smbd -F --debug-stdout --no-process-group |tee /var/log/samba/log

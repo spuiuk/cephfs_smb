@@ -1,0 +1,3 @@
+cat /config/ceph/cephfs-samba.conf |sed 's/\[cephfs-vfs\]/\[cephfs-vfs-ll\]/' > /config/ceph/cephfs-vfs-ll.conf
+echo include = /config/ceph/cephfs-vfs-ll.conf >> /etc/samba/smb.conf
+
