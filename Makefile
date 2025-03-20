@@ -8,7 +8,7 @@ ssh:
 
 start:
 	if [ -d ${TYPE}/.vagrant ]; then echo -e "\n\nHave an already running Vagrant box\n\n"; \
-	else make -C ${TYPE} start; fi
+	else make -C ${TYPE} start; ln -sf ${TYPE}/ssh_key ssh_key; fi
 
 stop: clean_keys
 	make -C ${TYPE} stop
