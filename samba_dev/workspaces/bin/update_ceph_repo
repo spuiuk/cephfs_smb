@@ -1,0 +1,28 @@
+#!/bin/bash
+
+url="https://shaman.ceph.com/api/search?project=ceph&ref=main&flavor=default&status=ready&distros=centos/9/x86_64&sha1=latest"
+dest="/etc/yum.repos.d/ceph-main.repo"
+tmpfile=/tmp/shaman.json
+curl -sL "$url" -o "${tmpfile}" && python3 <<EOF
+json_file = "${tmpfile}"
+dest = "${dest}"
+import json
+r = json.load(open(json_file))
+url = r[0]["url"]
+with open(dest, "w") as out:
+   print(f"[ceph-main-noarch]", file=out)
+   print(f"name=Ceph Development Build (main/noarch)", file=out)
+   print(f"baseurl={url}/noarch", file=out)
+   print("enabled=0", file=out)
+   print("gpgcheck=0", file=out)
+   print(f"[ceph-main-x86_64]", file=out)
+   print(f"name=Ceph Development Build (main/x86_64)", file=out)
+   print(f"baseurl={url}/x86_64", file=out)
+   print("enabled=0", file=out)
+   print("gpgcheck=0", file=out)
+EOF
+
+rm -rf "${tmpfile}"
+
+dnf -y update --enablerepo ceph-main-noarch --enablerepo ceph-main-x86_64 libcephfs2 libcephfs-devel ibcephfs-proxy2
+
