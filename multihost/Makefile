@@ -12,10 +12,10 @@ ssh:
 	${SSH_CMD} root@mycephfs11
 
 vagrant:
-	rm -f ssh_key ssh_key.pub && ssh-keygen -N "" -f ssh_key
 	vagrant up
 
 copy_keys:
+	-ln -sf ../ssh_key ssh_key && ln -sf ../ssh_key.pub ssh_key.pub
 	${SCP_CMD} ssh_key root@mycephfs11:/root/.ssh/id_rsa
 	${SSH_CMD} root@mycephfs11 "chmod 0700 /root/.ssh/id_rsa"
 
