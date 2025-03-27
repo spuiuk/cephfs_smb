@@ -8,6 +8,7 @@ ceph_new:filesystem = mycephfs
 browseable = yes
 read only = no
 acl_xattr:ignore system acls = yes
+acl_xattr:security_acl_name = user.NTACL
 ceph_new:proxy = no
 EOF
 
