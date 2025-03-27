@@ -3,14 +3,14 @@
 # Types: singlehost, multihost
 TYPE ?= multihost
 
-ssh:
+ceph_ssh:
 	make -C ${TYPE} ssh
 
-start:
+ceph_start:
 	if [ -d ${TYPE}/.vagrant ]; then echo -e "\n\nHave an already running Vagrant box\n\n"; \
 	else make -C ${TYPE} start; ln -sf ${TYPE}/ssh_key ssh_key; fi
 
-stop: clean_keys
+ceph_stop: clean_keys
 	make -C ${TYPE} stop
 
 clean_keys:
