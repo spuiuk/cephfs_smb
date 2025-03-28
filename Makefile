@@ -1,4 +1,5 @@
 -include devel.mk
+-include client.mk
 
 # Types: singlehost, multihost
 TYPE ?= multihost
