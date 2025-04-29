@@ -30,6 +30,6 @@ stop:
 
 provision: sync_resources
 	${SCP_CMD} provision.sh root@mycephfs11:/tmp/provision.sh
-	${SSH_CMD} root@mycephfs11 "DEVEL_IMAGE=${DEVEL_IMAGE} SMB_IMAGE=${SMB_IMAGE} /bin/bash -x /tmp/provision.sh"
+	${SSH_CMD} root@mycephfs11 "DEVEL_IMAGE=${DEVEL_IMAGE} SMB_IMAGE=${SMB_IMAGE} CEPH_SHARED_FOLDER='${CEPH_SHARED_FOLDER}' /bin/bash -x /tmp/provision.sh"
 
 .PHONY: ssh vagrant copy_keys start stop provision
