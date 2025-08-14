@@ -1,5 +1,5 @@
 dnf install -y centos-release-ceph-squid
-dnf install -y cephadm
+dnf install -y cephadm python3-pyyaml python3-jinja2
 cephadm add-repo --dev main
 dnf update -y cephadm
 
