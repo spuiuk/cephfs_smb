@@ -1,4 +1,4 @@
-dnf install -y centos-release-ceph-reef
+dnf install -y centos-release-ceph-squid
 dnf install -y cephadm
 cephadm add-repo --dev main
 dnf update -y cephadm
