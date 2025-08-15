@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
       nodeconfig.vm.hostname = node[:hostname]
       nodeconfig.vm.network :private_network, ip: node[:ip]
 
-      memory = node[:ram] ? node[:ram] : 2048;
+      memory = node[:ram] ? node[:ram] : 8096;
       nodeconfig.vm.provider :libvirt do |lv|
         #lv.storage_pool_name = storage_pool_name
         lv.driver = "kvm"
