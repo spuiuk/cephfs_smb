@@ -4,8 +4,7 @@
 TYPE ?= multihost
 
 ssh_key:
-	rm -f ssh_key ssh_key.pub
-	ssh-keygen -N "" -f ssh_key
+	test -s ssh_key || ssh-keygen -N "" -f ssh_key
 
 ceph_ssh:
 	make -C ${TYPE} ssh
@@ -16,7 +15,6 @@ ceph_start: ssh_key
 
 ceph_stop:
 	make -C ${TYPE} stop
-	rm -rf ssh_key ssh_key.pub
 
 clean_keys:
 	-ssh-keygen -R mycephfs11
