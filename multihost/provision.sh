@@ -1,4 +1,4 @@
-dnf install -y python3-pyyaml python3-jinja2 podman
+dnf install -y python3-pyyaml python3-jinja2 podman python3-pip
 
 dnf install -y centos-release-ceph-squid
 dnf install -y cephadm
@@ -29,6 +29,9 @@ do
 	ssh-copy-id -f -i /etc/ceph/ceph.pub root@${host}
 	ssh ${host} dnf install -y podman
 	ceph orch host add ${host} ${ip}
+
+	ssh ${host} dnf install -y python3-pyyaml python3-jinja2 python3-pip podman ceph-common
+
 	ceph orch host label add ${host} smb
 done
 ceph orch host label add mycephfs11 smb
