@@ -48,3 +48,18 @@ Use this variable to point to the samba container used for the SMB service. Use 
 ```
 SMB_IMAGE = quay.io/spuiuk/smb_test:latest
 ```
+
+### Setting up downstream:
+
+To test downstream, you require to set 2 variables
+
+### CEPH_REPO:
+This is the URL to the repo file for the downstream build.
+
+### CP_PASSWD:
+The production entitlement key. Follow instructions [here](https://github.ibm.com/alchemy-registry/image-iam/blob/master/obtaining_entitlement.md).
+
+```
+CEPH_REPO = https://xxx.yyy.zzz.com/pub/abc/defg/test-rhel9.repo
+CP_PASSWD = aaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbcccccccccccccccccccccccccccccccccccccccccccccccccccccccccdddddddddddddddddd
+```

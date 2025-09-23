@@ -5,9 +5,6 @@ SCP_CMD = scp -F ${SSH_CONFIG}
 SSH_CMD = ssh -F ${SSH_CONFIG}
 RSYNC_CMD = rsync -e '${SSH_CMD}'
 
-# Dev branch to use - defaults to main
-DEVEL_IMAGE ?= quay.ceph.io/ceph-ci/ceph:main
-
 ssh:
 	${SSH_CMD} root@mycephfs11
 
@@ -30,7 +27,7 @@ stop:
 
 provision: sync_resources
 	${SCP_CMD} provision.sh root@mycephfs11:/tmp/provision.sh
-	${SSH_CMD} root@mycephfs11 "DEVEL_IMAGE=${DEVEL_IMAGE} SMB_IMAGE=${SMB_IMAGE} /bin/bash -x /tmp/provision.sh"
+	${SSH_CMD} root@mycephfs11 "CEPH_REPO=${CEPH_REPO} CP_PASSWD=${CP_PASSWD} DEVEL_IMAGE=${DEVEL_IMAGE} SMB_IMAGE=${SMB_IMAGE} /bin/bash -x /tmp/provision.sh"
 
 _tcpdump:
 	-${SSH_CMD} root@mycephfs11 "dnf install -y tcpdump"

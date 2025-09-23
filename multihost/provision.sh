@@ -1,9 +1,16 @@
 dnf install -y python3-pyyaml python3-jinja2 podman python3-pip
 
-dnf install -y centos-release-ceph-squid
-dnf install -y cephadm
-cephadm add-repo --dev main
-dnf update -y cephadm
+if [ ${CEPH_REPO}x != "x" ]
+then
+	dnf config-manager --add-repo ${CEPH_REPO}
+	mkdir -p /usr/share/ibm-storage-ceph-license/ && touch /usr/share/ibm-storage-ceph-license/accept
+	dnf install -y cephadm
+else
+	dnf install -y centos-release-ceph-squid
+	dnf install -y cephadm
+	cephadm add-repo --dev main
+	dnf update -y cephadm
+fi
 
 if [ ${DEVEL_IMAGE}x != "x" ]
 then
@@ -13,7 +20,15 @@ fi
 
 cephadm install ceph-common
 export HOST_IP=192.168.145.11
-cephadm bootstrap --mon-ip=${HOST_IP} --initial-dashboard-password="x"
+
+if [ ${CP_PASSWD}x != "x" ]
+then
+	CEPHADM_CMD="cephadm bootstrap --registry-url cp.icr.io --registry-username cp --registry-password ${CP_PASSWD} --mon-ip=${HOST_IP} --initial-dashboard-password=x"
+else
+       CEPHADM_CMD="cephadm bootstrap --mon-ip=${HOST_IP} --initial-dashboard-password=x"
+fi
+
+${CEPHADM_CMD}
 
 cat >/root/.ssh/config <<EOF
 Host mycephfs??
@@ -27,7 +42,13 @@ do
 	ip="192.168.145.${h}"
 	while ! ssh root@${host} /bin/true; do sleep 1; done
 	ssh-copy-id -f -i /etc/ceph/ceph.pub root@${host}
-	ssh ${host} dnf install -y podman
+
+	if [ ${CEPH_REPO}x != "x" ]
+	then
+		ssh ${host} "dnf config-manager --add-repo ${CEPH_REPO} && mkdir -p /usr/share/ibm-storage-ceph-license/ && touch /usr/share/ibm-storage-ceph-license/accept"
+	else
+		ssh ${host} "dnf install -y centos-release-ceph-squid && dnf install -y cephadm && cephadm add-repo --dev main && dnf update -y cephadm"
+	fi
 	ceph orch host add ${host} ${ip}
 
 	ssh ${host} dnf install -y python3-pyyaml python3-jinja2 python3-pip podman ceph-common
@@ -35,6 +56,7 @@ do
 	while ! ceph orch host add ${host} ${ip}; do sleep 5; done
 	ceph orch host label add ${host} smb
 done
+
 ceph orch host label add mycephfs11 smb
 
 ceph orch apply osd --all-available-devices
