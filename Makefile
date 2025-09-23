@@ -11,7 +11,8 @@ ceph_ssh:
 
 ceph_start: ssh_key
 	if [ -d ${TYPE}/.vagrant ]; then echo -e "\n\nHave an already running Vagrant box\n\n"; \
-	else make -C ${TYPE} start; ln -sf ${TYPE}/ssh_key ssh_key; fi
+	else make -C ${TYPE} start; fi
+	test -s ssh_key || ln -sf ${TYPE}/ssh_key ssh_key
 
 ceph_stop:
 	make -C ${TYPE} stop
