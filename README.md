@@ -11,15 +11,15 @@ TYPE = singlehost
 
 To start a cluster
 ```
-make start
+make ceph_start
 ```
 
 To stop the cluster
 ```
-make stop
+make ceph_stop
 ```
 
 To login to the main host of the cluster
 ```
-make ssh
+make ceph_ssh
 ```
