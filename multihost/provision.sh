@@ -32,6 +32,7 @@ do
 
 	ssh ${host} dnf install -y python3-pyyaml python3-jinja2 python3-pip podman ceph-common
 
+	while ! ceph orch host add ${host} ${ip}; do sleep 5; done
 	ceph orch host label add ${host} smb
 done
 ceph orch host label add mycephfs11 smb
