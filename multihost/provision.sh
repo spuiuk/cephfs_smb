@@ -49,7 +49,6 @@ do
 	else
 		ssh ${host} "dnf install -y centos-release-ceph-squid && dnf install -y cephadm && cephadm add-repo --dev main && dnf update -y cephadm"
 	fi
-	ceph orch host add ${host} ${ip}
 
 	ssh ${host} dnf install -y python3-pyyaml python3-jinja2 python3-pip podman ceph-common
 
