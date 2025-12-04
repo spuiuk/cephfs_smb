@@ -11,15 +11,10 @@ ssh:
 vagrant:
 	vagrant up
 
-copy_keys:
-	-ln -sf ../ssh_key ssh_key && ln -sf ../ssh_key.pub ssh_key.pub
-	${SCP_CMD} ssh_key root@mycephfs11:/root/.ssh/id_rsa
-	${SSH_CMD} root@mycephfs11 "chmod 0700 /root/.ssh/id_rsa"
-
 sync_resources:
 	${RSYNC_CMD} -av --copy-links ../resources root@mycephfs11:
 
-start: vagrant copy_keys provision
+start: vagrant provision
 
 stop:
 	vagrant destroy -f

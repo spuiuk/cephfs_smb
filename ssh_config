@@ -1,27 +1,16 @@
-Host mycephfs10
-	HostName 192.168.145.10
+Host mycephfs??
 	IdentityFile ./ssh_key
-	StrictHostKeyChecking no
-	UpdateHostKeys yes
+	PasswordAuthentication no
 	UserKnownHostsFile /dev/null
+	StrictHostKeyChecking no
+	IdentitiesOnly yes
+	User root
 
 Host mycephfs11
-	HostName 192.168.145.11
-	IdentityFile ./ssh_key
-	StrictHostKeyChecking no
-	UpdateHostKeys yes
-	UserKnownHostsFile /dev/null
+	Hostname 192.168.145.11
 
 Host mycephfs12
-	HostName 192.168.145.12
-	IdentityFile ./ssh_key
-	StrictHostKeyChecking no
-	UpdateHostKeys yes
-	UserKnownHostsFile /dev/null
+	Hostname 192.168.145.12
 
 Host mycephfs13
-	HostName 192.168.145.13
-	IdentityFile ./ssh_key
-	StrictHostKeyChecking no
-	UpdateHostKeys yes
-	UserKnownHostsFile /dev/null
+	Hostname 192.168.145.13
