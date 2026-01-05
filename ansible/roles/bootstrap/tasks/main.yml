@@ -1,0 +1,77 @@
+---
+- name: Copy ssh key to bootstrap node
+  ansible.builtin.copy:
+    src: ssh_key
+    dest: "/root/.ssh/id_rsa"
+    mode: 0600
+
+- name: Install cephadm
+  ansible.builtin.dnf:
+    name: cephadm
+    state: present
+
+- name: Set up extra vars for installs
+  ansible.builtin.set_fact:
+    singlehost_install_parameter: "--single-host-defaults"
+  when: INSTALL_TYPE is defined and INSTALL_TYPE == "singlehost"
+
+- name: Update cephadm repo and bootstrap
+  when: CEPH_REPO is undefined or CEPH_REPO | length == 0
+  block:
+    - name: Set repo to main
+      ansible.builtin.shell: cephadm add-repo --dev main
+    - name: Update to latest cephadm packages
+      ansible.builtin.dnf:
+        name:
+          - cephadm
+          - ceph-common
+        state: latest
+    - name: Run bootstrap
+      ansible.builtin.shell: cephadm bootstrap --mon-ip={{ HOST_IP }} --initial-dashboard-password=x {{ EXTRA_INSTALL }}
+      args:
+        creates: /etc/ceph/ceph.conf
+  vars:
+    HOST_IP: "{{ ansible_default_ipv4.address }}"
+    EXTRA_INSTALL: "{{ singlehost_install_parameter | default('') }}"
+
+- name: bootstrap with user provided repo
+  when: CEPH_REPO is defined and CEPH_REPO | length > 0
+  block:
+    - name: Check for CP_PASSWD
+      fail:
+        msg: "Please provide credentials in CP_PASSWD for the Staging Repo"
+      when: CP_PASSWD is not defined  or CP_PASSWD | length == 0
+    - name: Run bootstrap for CEPH_REPO
+      ansible.builtin.shell: cephadm bootstrap --registry-url cp.stg.icr.io --registry-username cp --registry-password {{ CP_PASSWD }} --mon-ip={{ HOST_IP }} --initial-dashboard-password=x {{ EXTRA_INSTALL }}
+      args:
+        creates: /etc/ceph/ceph.conf
+  vars:
+    HOST_IP: "{{ ansible_default_ipv4.address }}"
+    EXTRA_INSTALL: "{{ singlehost_install_parameter | default('') }}"
+
+- name: Set mon_data_avail_warn to low number to avoid warnings
+  ansible.builtin.shell: ceph config set global mon_data_avail_warn 10
+
+- name: Copy ceph ssh key to other cluster hosts
+  ansible.builtin.shell: ssh-copy-id -f -i /etc/ceph/ceph.pub root@{{ item }}
+  loop: "{{ groups.ceph_cluster_other_hosts }}"
+
+- name: Add other hosts to Ceph cluster
+  ansible.builtin.shell: ceph orch host add {{ item }}
+  loop: "{{ groups.ceph_cluster_other_hosts }}"
+
+- name: Label ceph cluster hosts to smb
+  ansible.builtin.shell: ceph orch host label add {{ item }} smb
+  loop: "{{ groups.all }}"
+
+- name: Create OSD on all available devices
+  ansible.builtin.shell: ceph orch apply osd --all-available-devices
+
+- name: Wait for OSDs to be created
+  ansible.builtin.shell: |
+    until ceph -s|grep -q 'HEALTH_OK'; do
+      sleep 5
+    done
+
+- name: Enable orchestrator module
+  ansible.builtin.shell: ceph mgr module enable orchestrator

@@ -1,0 +1,32 @@
+---
+- name: Install required packages
+  ansible.builtin.dnf:
+    name:
+    - samba-client
+    state: present
+
+- name: Set custom Samba image if set
+  ansible.builtin.shell: ceph config set mgr mgr/cephadm/container_image_samba {{ SMB_IMAGE }}
+  when: SMB_IMAGE is defined and SMB_IMAGE | length > 0
+
+- name: Enable smb module
+  ansible.builtin.shell: ceph mgr module enable smb
+
+- name: Create smbshares subvolume
+  ansible.builtin.shell: ceph fs subvolume create mycephfs smbshares --mode 0777
+
+- name: Wait for subvolume smbshares to be created
+  ansible.builtin.shell: until ceph fs subvolume ls mycephfs| grep smbshares; do sleep 5; done
+
+- name: Copy over yml file with smb examples
+  ansible.builtin.copy:
+    src: ../resources/
+    dest: /root/resources
+
+- name: SMB share notice
+  ansible.builtin.copy:
+    content: |
+      The SMB service definitions are available in /root/resources
+      Select the type you need and run the command
+      ceph smb apply -i /root/resources/<service definition>
+    dest: /root/README.CEPH_SMB

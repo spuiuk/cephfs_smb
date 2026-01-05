@@ -1,0 +1,53 @@
+---
+- name: Update hosts
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+
+- name: Install Ceph Tentacle Repo
+  ansible.builtin.dnf:
+    name: centos-release-ceph-tentacle
+    state: present
+  when: CEPH_REPO is undefined or CEPH_REPO|length == 0
+
+- name: Install Ceph Custom Repo
+  ansible.builtin.shell: dnf config-manager --add-repo {{ CEPH_REPO }}
+  when: CEPH_REPO is defined and CEPH_REPO|length > 0
+
+- name: Create parent directory for IBM license file
+  ansible.builtin.file:
+    path: /usr/share/ibm-storage-ceph-license/
+    state: directory
+
+- name: Create IBM license file
+  ansible.builtin.file:
+    path: /usr/share/ibm-storage-ceph-license/accept
+    state: touch
+
+- block:
+    - name: Install epel-release for Centos 10
+      ansible.builtin.dnf:
+        name:
+          - epel-release
+        state: present
+  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '10'
+
+- name: Install required packages on hosts
+  ansible.builtin.dnf:
+    name:
+      - podman
+      - python3-pyyaml
+      - python3-pip
+      - ceph-common
+      - python3-jinja2
+      - lvm2
+    state: latest
+
+- name: Update ssh config
+  ansible.builtin.copy:
+    dest: "/root/.ssh/config"
+    mode: 0600
+    content: |
+      Host mycephfs??
+        StrictHostKeyChecking no
+        UpdateHostKeys yes

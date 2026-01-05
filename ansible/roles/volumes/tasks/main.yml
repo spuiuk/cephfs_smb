@@ -1,0 +1,16 @@
+---
+- name: Install required packages
+  ansible.builtin.dnf:
+    name:
+    - ceph-fuse
+    state: present
+
+- name: Create volume mycephfs
+  ansible.builtin.shell: ceph fs volume create mycephfs
+
+- name: Wait for volume mycephfs to come up
+  ansible.builtin.shell: until ceph fs ls|grep mycephfs; do sleep 5; done
+
+- name: Fuse mount volume mycephfs into /mnt-cephfs - Ignore any errors
+  ansible.builtin.shell: mkdir -p /mnt-cephfs && ceph-fuse /mnt-cephfs
+  ignore_errors: true

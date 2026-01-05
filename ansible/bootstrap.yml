@@ -1,0 +1,7 @@
+---
+- hosts: ceph_cluster_bootstrap_host
+  roles:
+    - bootstrap
+    - volumes
+    - smb
+
