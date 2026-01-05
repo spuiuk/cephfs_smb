@@ -34,6 +34,12 @@ Set the type of cluster. This would either be "multihost" for a 3 node cluster o
 ```
 TYPE = singlehost
 ```
+### VAGRANT_BOX:
+Vagrant by default creates CentOS 9 vms using the Vagrant box "generic/centos9s". Use the VAGRANT_BOX parameter to set another Vagrant box.
+
+```
+VAGRANT_BOX=centos/stream10
+```
 
 ### DEVEL_IMAGE:
 Use this variable to point to the container image to use. Use this when testing out your own container image of a ceph build.

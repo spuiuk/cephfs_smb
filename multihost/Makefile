@@ -1,27 +1,34 @@
 -include ../devel.mk
 
 SSH_CONFIG := ../ssh_config
-SCP_CMD = scp -F ${SSH_CONFIG}
 SSH_CMD = ssh -F ${SSH_CONFIG}
-RSYNC_CMD = rsync -e '${SSH_CMD}'
+EXTRA_VARS="INSTALL_TYPE=multihost CEPH_REPO=${CEPH_REPO} CP_PASSWD=${CP_PASSWD} DEVEL_IMAGE=${DEVEL_IMAGE} SMB_IMAGE=${SMB_IMAGE}"
+
+ifdef VAGRANT_BOX
+	VAGRANT_VARS=VAGRANT_BOX=${VAGRANT_BOX}
+endif
 
 ssh:
 	${SSH_CMD} root@mycephfs11
 
-vagrant:
-	vagrant up
+_vagrant_start:
+	${VAGRANT_VARS} vagrant up
 
-sync_resources:
-	${RSYNC_CMD} -av --copy-links ../resources root@mycephfs11:
-
-start: vagrant provision
-
-stop:
+_vagrant_stop:
 	vagrant destroy -f
-	rm -rf .vagrant ssh_key ssh_key.pub
+	rm -rf .vagrant
 
-provision: sync_resources
-	${SCP_CMD} provision.sh root@mycephfs11:/tmp/provision.sh
-	${SSH_CMD} root@mycephfs11 "CEPH_REPO=${CEPH_REPO} CP_PASSWD=${CP_PASSWD} DEVEL_IMAGE=${DEVEL_IMAGE} SMB_IMAGE=${SMB_IMAGE} /bin/bash -x /tmp/provision.sh"
+_ansible_prep:
+	ln -sf ../multihost/ansible_inventory ../ansible/inventory
 
-.PHONY: ssh vagrant copy_keys start stop provision
+_ansible_cleanup:
+	rm ../ansible/inventory
+
+start: _vagrant_start provision
+
+stop: _vagrant_stop _ansible_cleanup
+
+provision: _ansible_prep
+	EXTRA_VARS=${EXTRA_VARS} make -C ../ansible common bootstrap
+
+.PHONY: ssh _vagrant_start _vagrant_stop _ansible_prep _ansible_cleanup start stop provision
