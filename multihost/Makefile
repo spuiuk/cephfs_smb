@@ -13,10 +13,11 @@ ssh:
 
 _vagrant_start:
 	${VAGRANT_VARS} vagrant up
+	vagrant ssh-config|sed 's/IdentityFile.*/IdentityFile .\/ssh_key/'| sed 's/User vagrant/User root/' > ../ssh_config
 
 _vagrant_stop:
 	vagrant destroy -f
-	rm -rf .vagrant
+	rm -rf .vagrant ../ssh_config
 
 _ansible_prep:
 	ln -sf ../multihost/ansible_inventory ../ansible/inventory

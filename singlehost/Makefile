@@ -10,6 +10,7 @@ ssh:
 
 vagrant:
 	vagrant up
+	vagrant ssh-config|sed 's/IdentityFile.*/IdentityFile .\/ssh_key/'|sed 's/User vagrant/User root/' > ../ssh_config
 
 copy_keys:
 	ln -sf ../ssh_key ssh_key && ln -sf ../ssh_key.pub ssh_key.pub
@@ -23,7 +24,7 @@ start: vagrant copy_keys provision
 
 stop:
 	vagrant destroy -f
-	rm -rf .vagrant ssh_key ssh_key.pub
+	rm -rf .vagrant ssh_key ssh_key.pub ../ssh_config
 
 provision: sync_resources
 	${SCP_CMD} provision.sh root@mycephfs11:/tmp/provision.sh
