@@ -1,34 +1,36 @@
 -include ../devel.mk
 
 SSH_CONFIG := ../ssh_config
-SCP_CMD = scp -F ${SSH_CONFIG}
 SSH_CMD = ssh -F ${SSH_CONFIG}
-RSYNC_CMD = rsync -e '${SSH_CMD}'
+EXTRA_VARS="INSTALL_TYPE=singlehost CEPH_REPO=${CEPH_REPO} CP_PASSWD=${CP_PASSWD} DEVEL_IMAGE=${DEVEL_IMAGE} SMB_IMAGE=${SMB_IMAGE}"
+
+ifdef VAGRANT_BOX
+	VAGRANT_VARS=VAGRANT_BOX=${VAGRANT_BOX}
+endif
 
 ssh:
 	${SSH_CMD} root@mycephfs11
 
-vagrant:
-	vagrant up
+_vagrant_start:
+	${VAGRANT_VARS} vagrant up
 	vagrant ssh-config|sed 's/IdentityFile.*/IdentityFile .\/ssh_key/'|sed 's/User vagrant/User root/' > ../ssh_config
 
-copy_keys:
-	ln -sf ../ssh_key ssh_key && ln -sf ../ssh_key.pub ssh_key.pub
-	${SCP_CMD} ssh_key root@mycephfs11:/root/.ssh/id_rsa
-	${SSH_CMD} root@mycephfs11 "chmod 0700 /root/.ssh/id_rsa"
-
-sync_resources:
-	${RSYNC_CMD} -av  --copy-links ../resources root@mycephfs11:
-
-start: vagrant copy_keys provision
-
-stop:
+_vagrant_stop:
 	vagrant destroy -f
-	rm -rf .vagrant ssh_key ssh_key.pub ../ssh_config
+	rm -rf .vagrant ../ssh_config
 
-provision: sync_resources
-	${SCP_CMD} provision.sh root@mycephfs11:/tmp/provision.sh
-	${SSH_CMD} root@mycephfs11 "CEPH_REPO=${CEPH_REPO} CP_PASSWD=${CP_PASSWD} DEVEL_IMAGE=${DEVEL_IMAGE} SMB_IMAGE=${SMB_IMAGE} /bin/bash -x /tmp/provision.sh"
+_ansible_prep:
+	ln -sf ../singlehost/ansible_inventory ../ansible/inventory
+
+_ansible_cleanup:
+	rm ../ansible/inventory
+
+start: _vagrant_start provision
+
+stop: _vagrant_stop _ansible_cleanup
+
+provision: _ansible_prep
+	EXTRA_VARS=${EXTRA_VARS} make -C ../ansible common bootstrap
 
 _tcpdump:
 	-${SSH_CMD} root@mycephfs11 "dnf install -y tcpdump"
@@ -39,4 +41,4 @@ tcpdump: _tcpdump
 	${SCP_CMD} root@mycephfs11:/tmp/out.pcap /tmp/out.pcap
 	wireshark /tmp/out.pcap
 
-.PHONY: ssh vagrant copy_keys start stop provision
+.PHONY: ssh _vagrant_start _vagrant_stop _ansible_prep _ansible_cleanup start stop provision _tcpdump tcpdump
