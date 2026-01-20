@@ -8,5 +8,8 @@ common:
 bootstrap:
 	ansible-playbook ${ANSIBLE_EXTRA_VARS} -i inventory bootstrap.yml
 
+setup_dc:
+	ansible-playbook ${ANSIBLE_EXTRA_VARS} -i inventory setup_dc.yml
+
 test:
 	ansible-playbook ${ANSIBLE_EXTRA_VARS} -i inventory test.yml

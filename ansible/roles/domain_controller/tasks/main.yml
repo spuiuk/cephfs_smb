@@ -1,0 +1,44 @@
+---
+# podman network create --subnet 10.90.0.0/24 --gateway 10.90.0.1 --driver bridge --ignore --disable-dns podman_utils
+- name: Create podman network - utils
+  containers.podman.podman_network:
+    name: podman_utils
+    subnet: 10.90.0.0/24
+    gateway: 10.90.0.1
+    driver: bridge
+    state: present
+    disable_dns: true
+  become: true
+
+# podman run --detach --rm --name samba-ad-server --cap-add=SYS_ADMIN --network=podman_utils quay.io/samba.org/samba-ad-server:latest
+- name: Start samba-ad-server pod
+  containers.podman.podman_container:
+    name: samba-ad-server
+    image: quay.io/samba.org/samba-ad-server:latest
+    state: started
+    cap_add:
+      - "SYS_ADMIN"
+    detach: true
+    rm: true
+    network:
+    - podman_utils
+  register: samba_ad_container
+
+- name: Get AD Container ip address
+  ansible.builtin.set_fact:
+    samba_ad_container_ipaddr: "{{ samba_ad_container['container']['NetworkSettings']['IPAddress'] }}"
+
+- name: Enable forwarding
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    reload: true
+    state: present
+
+- name: Allow packet forwarding to podman1
+  ansible.posix.firewalld:
+    zone: public
+    interface: podman1
+    permanent: true
+    immediate: true
+    state: enabled

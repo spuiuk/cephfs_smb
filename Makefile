@@ -17,6 +17,9 @@ ceph_start: ssh_key
 ceph_stop:
 	make -C ${TYPE} stop
 
+ceph_setup_dc:
+	make -C ansible setup_dc
+
 clean_keys:
 	-ssh-keygen -R mycephfs11
 	-ssh-keygen -R mycephfs12
@@ -25,3 +28,4 @@ clean_keys:
 	-ssh-keygen -R 192.168.145.12
 	-ssh-keygen -R 192.168.145.13
 	rm -f ssh_key ssh_key.pub
+

@@ -1,0 +1,8 @@
+---
+- hosts: ceph_cluster_dc
+  roles:
+    - domain_controller
+
+- hosts: all
+  roles:
+    - krb5_clients

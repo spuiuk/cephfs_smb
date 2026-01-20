@@ -3,3 +3,6 @@ mycephfs11
 [ceph_cluster_other_hosts]
 mycephfs12
 mycephfs13
+[ceph_cluster_dc]
+mycephfs11
+

@@ -2,3 +2,7 @@
 mycephfs11
 
 [ceph_cluster_other_hosts]
+
+[ceph_cluster_dc]
+mycephfs11
+

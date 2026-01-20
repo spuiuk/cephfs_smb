@@ -1,0 +1,22 @@
+[logging]
+default = FILE:/var/log/krb5libs.log
+kdc = FILE:/var/log/krb5kdc.log
+admin_server = FILE:/var/log/kadmind.log
+
+[libdefaults]
+default_realm = DOMAIN1.SINK.TEST
+dns_lookup_realm = false
+dns_lookup_kdc = false
+
+[realms]
+
+DOMAIN1.SINK.TEST = {
+    kdc = {{ AD_SERVER }}
+    admin_server = {{ AD_SERVER }}
+    default_domain = default.svc.cluster.local
+}
+
+[domain_realm]
+ default.svc.cluster.local = DOMAIN1.SINK.TEST
+ .default.svc.cluster.local = DOMAIN1.SINK.TEST
+

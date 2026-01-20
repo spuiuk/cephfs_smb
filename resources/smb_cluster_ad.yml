@@ -1,0 +1,31 @@
+resources:
+  - resource_type: ceph.smb.cluster
+    cluster_id: mysmb
+    auth_mode: active-directory
+    custom_dns:
+      - "10.90.0.2"
+    domain_settings:
+      realm: DOMAIN1.SINK.TEST
+      join_sources:
+        - source_type: resource
+          ref: join1-admin
+
+  - resource_type: ceph.smb.join.auth
+    auth_id: join1-admin
+    auth:
+      username: Administrator
+      password: Passw0rd
+
+  - resource_type: ceph.smb.share
+    cluster_id: mysmb
+    share_id: mysmb-root
+    intent: present
+    name: mysmb-root
+    readonly: false
+    browseable: true
+    cephfs:
+      volume: mycephfs
+      subvolume: smbshares
+      path: /
+      provider: samba-vfs
+

@@ -9,14 +9,14 @@
   ansible.builtin.shell: ceph config set mgr mgr/cephadm/container_image_samba {{ SMB_IMAGE }}
   when: SMB_IMAGE is defined and SMB_IMAGE | length > 0
 
-- name: Enable smb module
-  ansible.builtin.shell: ceph mgr module enable smb
-
 - name: Create smbshares subvolume
   ansible.builtin.shell: ceph fs subvolume create mycephfs smbshares --mode 0777
 
 - name: Wait for subvolume smbshares to be created
   ansible.builtin.shell: until ceph fs subvolume ls mycephfs| grep smbshares; do sleep 5; done
+
+- name: Enable smb module
+  ansible.builtin.shell: ceph mgr module enable smb
 
 - name: Copy over yml file with smb examples
   ansible.builtin.copy:
