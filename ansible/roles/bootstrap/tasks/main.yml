@@ -56,6 +56,10 @@
   ansible.builtin.shell: ssh-copy-id -f -i /etc/ceph/ceph.pub root@{{ item }}
   loop: "{{ groups.ceph_cluster_other_hosts }}"
 
+- name: Copy ceph conf to other cluster hosts
+  ansible.builtin.shell: scp /etc/ceph/ceph.conf root@{{ item }}:/etc/ceph/ceph.conf
+  loop: "{{ groups.ceph_cluster_other_hosts }}"
+
 - name: Add other hosts to Ceph cluster
   ansible.builtin.shell: ceph orch host add {{ item }}
   loop: "{{ groups.ceph_cluster_other_hosts }}"
