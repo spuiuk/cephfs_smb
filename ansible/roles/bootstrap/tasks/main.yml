@@ -68,6 +68,10 @@
   ansible.builtin.shell: ceph orch host label add {{ item }} smb
   loop: "{{ groups.all }}"
 
+- name: Label ceph cluster hosts to _admin. This allows us to administer the cluster from any host
+  ansible.builtin.shell: ceph orch host label add {{ item }} _admin
+  loop: "{{ groups.all }}"
+
 - name: Create OSD on all available devices
   ansible.builtin.shell: ceph orch apply osd --all-available-devices
 
