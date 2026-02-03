@@ -1,0 +1,26 @@
+---
+# podman network create --subnet 10.90.0.0/24 --gateway 10.90.0.1 --driver bridge --ignore --disable-dns podman_utils
+- name: Create podman network - utils
+  containers.podman.podman_network:
+    name: podman_utils
+    subnet: 10.90.0.0/24
+    gateway: 10.90.0.1
+    driver: bridge
+    state: present
+    disable_dns: true
+  become: true
+
+- name: Enable forwarding
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    reload: true
+    state: present
+
+- name: Allow packet forwarding to podman1
+  ansible.posix.firewalld:
+    zone: public
+    interface: podman1
+    permanent: true
+    immediate: true
+    state: enabled
