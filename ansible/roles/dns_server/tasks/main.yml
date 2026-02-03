@@ -1,0 +1,52 @@
+---
+- name: Create podman_utils network if it doesn't exist
+  ansible.builtin.include_role:
+    name: podman_utils_network
+
+- block:
+  - name: Get samba-ad-server container information
+    ansible.builtin.include_role:
+      name: get_container_ip
+      public: yes
+    vars:
+      CONTAINER_NAME: "samba-ad-server"
+  - ansible.builtin.set_fact:
+      samba_ad_container_ipaddr: "{{ CONTAINER_IPADDR }}"
+
+  - name: Copy over custom dnsmasq configuration
+    ansible.builtin.template:
+      src: dnsmasq_conf.j2
+      dest: /tmp/dnsmasq-custom.conf
+      owner: root
+      group: root
+      mode: '0644'
+    vars:
+      SAMBA_AD_IPADDR: "{{ samba_ad_container_ipaddr }}"
+
+  - name: Start dns-server pod
+    containers.podman.podman_container:
+      name: dnsmasq
+      image: docker.io/dockurr/dnsmasq
+      state: started
+      detach: true
+      rm: true
+      network:
+      - podman_utils
+      volumes:
+      - "/tmp/dnsmasq-custom.conf:/etc/dnsmasq.conf:z"
+    register: dnsmasq_container
+
+  - name: Get DNS Server Container ip address
+    ansible.builtin.set_fact:
+      dnsmasq_container_ipaddr: "{{ dnsmasq_container['container']['NetworkSettings']['Networks']['podman_utils']['IPAddress'] }}"
+
+  - debug:
+      msg: "{{dnsmasq_container}}"
+
+  delegate_to: "{{ groups['ceph_cluster_bootstrap_host'][0] }}"
+
+- name: Update /etc/resolv.conf
+  ansible.builtin.copy:
+    dest: /etc/resolv.conf
+    content: |
+      nameserver {{ dnsmasq_container_ipaddr }}
