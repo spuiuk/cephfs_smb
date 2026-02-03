@@ -1,0 +1,20 @@
+---
+- name: Get Container information
+  containers.podman.podman_container_info:
+    name: "{{ CONTAINER_NAME }}"
+  register: CONTAINER_INFO
+
+- name: Check for running container
+  fail:
+    msg: "Container not running"
+  when: CONTAINER_INFO['containers'][0] is not defined
+
+
+- name: Get container ip address
+  ansible.builtin.set_fact:
+    CONTAINER_IPADDR: "{{ CONTAINER_INFO['containers'][0]['NetworkSettings']['Networks']['podman_utils']['IPAddress'] }}"
+
+- name: Check for Container ip address
+  ansible.builtin.fail:
+    msg: "Container ip address not set"
+  when: CONTAINER_IPADDR is not defined

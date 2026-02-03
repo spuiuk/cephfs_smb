@@ -1,23 +1,14 @@
 ---
 - block:
   - name: Get samba-ad-server container information
-    containers.podman.podman_container_info:
-      name: samba-ad-server
-    register: samba_ad_container
+    ansible.builtin.include_role:
+      name: get_container_ip
+      public: yes
+    vars:
+      CONTAINER_NAME: "samba-ad-server"
 
-  - name: Check for running container
-    fail:
-      msg: "Samba AD Server Container not running"
-    when: samba_ad_container['containers'][0] is not defined
-
-  - name: Get samba-ad-server container ip address
-    ansible.builtin.set_fact:
-      samba_ad_container_ipaddr: "{{ samba_ad_container['containers'][0]['NetworkSettings']['Networks']['podman_utils']['IPAddress'] }}"
-
-  - name: Check for samba_ad_container_ipaddr
-    ansible.builtin.fail:
-      msg: "samba_ad_container_ipaddr not set"
-    when: samba_ad_container_ipaddr is not defined
+  - ansible.builtin.set_fact:
+      samba_ad_container_ipaddr: "{{ CONTAINER_IPADDR }}"
 
   delegate_to: "{{ groups['ceph_cluster_bootstrap_host'][0] }}"
 
