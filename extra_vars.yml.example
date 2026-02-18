@@ -1,0 +1,15 @@
+---
+# Copy this file to extra_vars.yml and set values as needed.
+# extra_vars.yml is gitignored - do not commit it.
+
+# URL to a custom Ceph repo file. Leave empty to use the default Ceph Tentacle repo.
+# CEPH_REPO: "https://example.com/path/to/repo.repo"
+
+# IBM/Red Hat entitlement key, required when CEPH_REPO is set.
+# CP_PASSWD: ""
+
+# Custom Ceph container image to use instead of the default.
+# DEVEL_IMAGE: "quay.io/youruser/ceph:tag"
+
+# Custom Samba container image to use instead of the default.
+# SMB_IMAGE: "quay.io/youruser/samba-server:tag"

@@ -2,6 +2,11 @@ ifdef EXTRA_VARS
         ANSIBLE_EXTRA_VARS := -e '${EXTRA_VARS}'
 endif
 
+EXTRA_VARS_FILE ?= ../extra_vars.yml
+ifneq (,$(wildcard ${EXTRA_VARS_FILE}))
+        ANSIBLE_EXTRA_VARS += -e @${EXTRA_VARS_FILE}
+endif
+
 common:
 	ansible-playbook ${ANSIBLE_EXTRA_VARS} -i inventory common.yml
 
