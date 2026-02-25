@@ -1,4 +1,8 @@
 ---
+- name: import variables
+  ansible.builtin.import_role:
+    name: import_config
+
 - name: Update hosts
   ansible.builtin.dnf:
     name: "*"
@@ -30,7 +34,7 @@
         name:
           - epel-release
         state: present
-  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '10'
+  when: DISTRO == "rhel-10"
 
 - name: Install required packages on hosts
   ansible.builtin.dnf:

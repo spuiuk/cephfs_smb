@@ -2,14 +2,27 @@
 # Copy this file to extra_vars.yml and set values as needed.
 # extra_vars.yml is gitignored - do not commit it.
 
-# URL to a custom Ceph repo file. Leave empty to use the default Ceph Tentacle repo.
-# CEPH_REPO: "https://example.com/path/to/repo.repo"
-
 # IBM/Red Hat entitlement key, required when CEPH_REPO is set.
 # CP_PASSWD: ""
 
 # Custom Ceph container image to use instead of the default.
 # DEVEL_IMAGE: "quay.io/youruser/ceph:tag"
 
-# Custom Samba container image to use instead of the default.
-# SMB_IMAGE: "quay.io/youruser/samba-server:tag"
+# Custom repo and container images to use.
+# All items on this list are optional and used only if set.
+# This is used when working with custom images or attempting
+# to use a in development downstream image. Use the values
+# in the images array to set the corresponding
+# mgr/cephadm/container_image_{{item}}
+# CUSTOM_VERSION:
+#   version: my_version
+#   repositories:
+#     default:
+#       rhel-9: https://example.com/path/to/9/repo.repo
+#       rhel-10: https://example.com/path/to/10/repo.repo
+#   images:
+#     ceph-base: quay.io/youruser/ceph-9-rhel9:yourtag
+#     grafana_image: quay.io/youruser/grafana-rhel10:yourtag
+#     prometheus_image: quay.io/youruser/prometheus:yourtag
+#     samba_metrics_image: quay.io/youruser/samba-metrics-rhel10:yourtag
+#     samba_image: quay.io/youruser/samba-server-rhel10:yourtag

@@ -1,0 +1,23 @@
+---
+- name: Check for Centos10
+  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '10'
+  ansible.builtin.set_fact:
+    DISTRO: "rhel-10"
+
+- name: Check for Centos9
+  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '9'
+  ansible.builtin.set_fact:
+    DISTRO: "rhel-9"
+
+- name: Check if CUSTOM_VERSION is set
+  when: CUSTOM_VERSION is defined
+  block:
+    - name: Check if custom Ceph repo is to be used
+      ansible.builtin.set_fact:
+        CEPH_REPO: "{{ CUSTOM_VERSION['repositories']['default'][DISTRO] }}"
+      when: CUSTOM_VERSION['repositories']['default'][DISTRO] is defined
+
+    - name: Check if custom images are to be set
+      ansible.builtin.set_fact:
+        CUSTOM_IMAGES: "{{ CUSTOM_VERSION['images'] }}"
+      when: CUSTOM_VERSION['images'] is defined and CUSTOM_VERSION['images'] | length > -1

@@ -1,4 +1,8 @@
 ---
+- name: import variables
+  ansible.builtin.import_role:
+    name: import_config
+
 - name: Copy ssh key to bootstrap node
   ansible.builtin.copy:
     src: ssh_key
@@ -83,3 +87,13 @@
 
 - name: Enable orchestrator module
   ansible.builtin.shell: ceph mgr module enable orchestrator
+
+- name: Set custom images in Ceph's mgr
+  ansible.builtin.shell:
+    cmd: |
+      set -euxo pipefail
+      ceph config set mgr mgr/cephadm/container_image_{{ item.key }} {{ item.value }}
+  loop: "{{ CUSTOM_IMAGES | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  when: CUSTOM_IMAGES is defined
