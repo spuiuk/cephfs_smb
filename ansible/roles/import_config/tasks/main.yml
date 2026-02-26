@@ -21,3 +21,16 @@
       ansible.builtin.set_fact:
         CUSTOM_IMAGES: "{{ CUSTOM_VERSION['images'] }}"
       when: CUSTOM_VERSION['images'] is defined and CUSTOM_VERSION['images'] | length > -1
+
+    - name: Check if custom container registery set
+      when: CUSTOM_VERSION['registry'] is defined
+      block:
+        - when: CUSTOM_VERSION['registry']['url'] is defined
+          ansible.builtin.set_fact:
+            REGISTRY_URL: "{{ CUSTOM_VERSION['registry']['url'] }}"
+        - when: CUSTOM_VERSION['registry']['username'] is defined
+          ansible.builtin.set_fact:
+            REGISTRY_USERNAME: "{{ CUSTOM_VERSION['registry']['username'] }}"
+        - when: CUSTOM_VERSION['registry']['password'] is defined
+          ansible.builtin.set_fact:
+            REGISTRY_PASSWORD: "{{ CUSTOM_VERSION['registry']['password'] }}"

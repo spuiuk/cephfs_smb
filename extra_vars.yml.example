@@ -2,12 +2,6 @@
 # Copy this file to extra_vars.yml and set values as needed.
 # extra_vars.yml is gitignored - do not commit it.
 
-# IBM/Red Hat entitlement key, required when CEPH_REPO is set.
-# CP_PASSWD: ""
-
-# Custom Ceph container image to use instead of the default.
-# DEVEL_IMAGE: "quay.io/youruser/ceph:tag"
-
 # Custom repo and container images to use.
 # All items on this list are optional and used only if set.
 # This is used when working with custom images or attempting
@@ -15,6 +9,10 @@
 # in the images array to set the corresponding
 # mgr/cephadm/container_image_{{item}}
 # CUSTOM_VERSION:
+#   registry:
+#     url: "quay.io"
+#     username: "user1"
+#     password: "aaaaaaaaaaaaaaabbbbccccccccccccccc"
 #   version: my_version
 #   repositories:
 #     default:

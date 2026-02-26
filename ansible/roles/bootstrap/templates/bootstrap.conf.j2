@@ -1,0 +1,5 @@
+[mon]
+
+{% for item in CUSTOM_IMAGES|dict2items %}
+mgr/cephadm/container_image_{{ item.key|regex_replace("_image$", "")|regex_replace("^ceph-base$", "base") }}  =  {{ item.value }}
+{% endfor %}
