@@ -19,5 +19,8 @@ setup_dc:
 setup_dns:
 	ansible-playbook ${ANSIBLE_EXTRA_VARS} -i inventory setup_dns.yml
 
+cleanup_cluster:
+	ansible-playbook ${ANSIBLE_EXTRA_VARS} -i inventory cleanup_cluster.yml
+
 test:
 	ansible-playbook ${ANSIBLE_EXTRA_VARS} -i inventory test.yml

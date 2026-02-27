@@ -1,0 +1,16 @@
+---
+- name: Obtain the cluster fsid
+  ansible.builtin.shell: ceph fsid
+  register: CLUSTER_FSID
+  when: inventory_hostname in groups['ceph_cluster_bootstrap_host']
+
+- name: Zap cluster
+  ansible.builtin.shell: "cephadm rm-cluster --force --zap-osds --fsid {{ CLUSTER_FSID.stdout }}"
+  when: inventory_hostname in groups['ceph_cluster_bootstrap_host']
+
+- name: Kill all running containers
+  ansible.builtin.shell: "podman kill -a"
+
+- name: rm all running containers
+  ansible.builtin.shell: "podman rm -a"
+
