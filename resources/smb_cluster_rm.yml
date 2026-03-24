@@ -1,0 +1,14 @@
+resources:
+  - resource_type: ceph.smb.cluster
+    intent: removed
+    cluster_id: mysmb
+
+  - resource_type: ceph.smb.share
+    intent: removed
+    cluster_id: mysmb
+    share_id: mysmb-root
+
+ - resource_type: ceph.smb.usersgroups
+    intent: removed
+    users_groups_id: ug1
+
