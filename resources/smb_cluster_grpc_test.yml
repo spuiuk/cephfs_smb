@@ -1,0 +1,152 @@
+# grpcurl -cacert certs/ca/ca.crt -cert certs/mycephfs11/mycephfs11.crt -key certs/mycephfs11/mycephfs11.key 192.168.145.11:54445 SambaControl/Status
+resources:
+  - resource_type: ceph.smb.cluster
+    cluster_id: mysmb
+    auth_mode: user
+    user_group_settings:
+      - source_type: resource
+        ref: ug1
+    remote_control:
+      cert: {ref: cert1}
+      key: {ref: key1}
+      ca_cert: {ref: cacert1}
+    placement: { label: "mysmb" }
+
+  - resource_type: ceph.smb.usersgroups
+    users_groups_id: ug1
+    values:
+      users:
+        - name: test1
+          password: x
+        - name: test2
+          password: x
+      groups: []
+
+  - resource_type: ceph.smb.share
+    cluster_id: mysmb
+    share_id: mysmb-root
+    intent: present
+    name: mysmb-root
+    readonly: false
+    browseable: true
+    cephfs:
+      volume: mycephfs
+      subvolume: smbshares
+      path: /
+      provider: samba-vfs
+
+  - resource_type: ceph.smb.tls.credential
+    tls_credential_id: cert1
+    credential_type: cert
+    value: |
+      -----BEGIN CERTIFICATE-----
+      MIIEgzCCA2ugAwIBAgIUFhwJp39V+W7b8z79CiF5uFsJbnswDQYJKoZIhvcNAQEL
+      BQAwQjELMAkGA1UEBhMCWFgxFTATBgNVBAcMDERlZmF1bHQgQ2l0eTEcMBoGA1UE
+      CgwTRGVmYXVsdCBDb21wYW55IEx0ZDAeFw0yNjAzMjUxODA2MjJaFw0yNzAzMjUx
+      ODA2MjJaMEIxCzAJBgNVBAYTAlhYMRUwEwYDVQQHDAxEZWZhdWx0IENpdHkxHDAa
+      BgNVBAoME0RlZmF1bHQgQ29tcGFueSBMdGQwggIiMA0GCSqGSIb3DQEBAQUAA4IC
+      DwAwggIKAoICAQCsiuveUvDnAz5ApOQgf1P9sHjpYkZgIQRoGLsPiE3U7uM+cf4E
+      VlXBnqO6qJh2eNc8Tg3CZ56fNUhALKz7rY3HtiUOHxy1kKmsVKc/SZkSCb+zTPOk
+      2FGY8Pfp4djVFXu3XY9jfrLanp0uE9G9kHdX9yOv34uYtXKG6bRUuvGWPLsiAyoT
+      vbQDM8TrP1HbmzUXcsoRjfG37a0NPViXnvK0mp9XKel5s4ZzWMnAYNCC5FlS6Vvf
+      grjFAUH5u1zAP36bPOmWAcZSGraanfUjMHnGzc2/Us1ARKBrstMWtPeIfSM1vvnz
+      jqyytp7HEMkZ878VATuXN9pCYjCDMkDgIANf3/jRrw9XtxgKJtznIH8RNboGpKZI
+      8Qs717K7KyX1ZRUeJyVgXHNSnXCUWEuKiit+6dz2pCTGBZAWPhKBydlEyblg2vrX
+      HOQ5D6TSsS907xPGp88NX/v2Pd9JCvR1KVswtWwBcPEI3sW9ywTYiw46dqOsSw8l
+      bkneAnj90eXjbs24j6G5hYM4iS5LG3EUqsMQOaWRF50y2abweB/Jxp4YZCD5XESe
+      qi2D9H3UK5BVKNJBCKBLXRmRFio2T1X0rUZ9ocF0DwPRaNJkQbGxCqIa3ViFVBPF
+      aatb5kGqwKVfJ9ClOmetoRgJ9ZlJyA33NmnIKLwYGIQMIVOFxswqi/POEQIDAQAB
+      o3EwbzAtBgNVHREEJjAkghxteWNlcGhmczExLmRvbWFpbjEuc2luay50ZXN0hwTA
+      qJELMB0GA1UdDgQWBBT4ts2FGVV8jmNjX5blfjHCNB4XgjAfBgNVHSMEGDAWgBSL
+      N+GcLl8aZvcn7BET1aqK0i1DiTANBgkqhkiG9w0BAQsFAAOCAQEAmlnnd20O0V73
+      s6PXwFVnB8XFXsXoESzDzlI4D/ld4yGLBRarmMJMWgLMdPmPfNjQzGBj7lhYCQWV
+      iPkPKTOV3nkM26cRfx0Ji92GOStvH8B6hrY/PqoOxPTN11T9BBCTQUTo51JlRrm8
+      t+ycDFxWhTI8vbfzwNiWz7H6TSA90rGzeLmIn12fikCllhFEIInwHRd/yyKUrPZq
+      Gn5d0v8cBfIDTcWW6nGcVaUlK86vD9L0anEXyHcfSTHD+b/mR8Gx6g6ZKkWNQQV+
+      1nDuIyjuFrTs9vPEjDLWUwgcgOtBfkraR9S78Lwrn1lvCfh513TGhwAh0xEorac5
+      5Z+lYf/Cyg==
+      -----END CERTIFICATE-----
+
+  - resource_type: ceph.smb.tls.credential
+    tls_credential_id: key1
+    credential_type: key
+    value: |
+      -----BEGIN PRIVATE KEY-----
+      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
+      l3yeDeqcanthUeyz8BG0u6tOBYuD
+      -----END PRIVATE KEY-----
+
+  - resource_type: ceph.smb.tls.credential
+    tls_credential_id: cacert1
+    credential_type: ca-cert
+    value: |
+      -----BEGIN CERTIFICATE-----
+      MIIDZTCCAk2gAwIBAgIUEeq3pfr+lQHvi3pJJTHvhIwHcOcwDQYJKoZIhvcNAQEL
+      BQAwQjELMAkGA1UEBhMCWFgxFTATBgNVBAcMDERlZmF1bHQgQ2l0eTEcMBoGA1UE
+      CgwTRGVmYXVsdCBDb21wYW55IEx0ZDAeFw0yNjAzMjUxNjU5NDZaFw0zMTAzMjUx
+      NjU5NDZaMEIxCzAJBgNVBAYTAlhYMRUwEwYDVQQHDAxEZWZhdWx0IENpdHkxHDAa
+      BgNVBAoME0RlZmF1bHQgQ29tcGFueSBMdGQwggEiMA0GCSqGSIb3DQEBAQUAA4IB
+      DwAwggEKAoIBAQDnomigaWzHQ8h/H9ujlUxBaJnwla8dUHiu4LwGro7mtYUyIwn7
+      FrCaYJlR2DhdwTf3ypaaz5Q2R88xxN8LlD2s5ruMf7wp8xiGXVqH+1sWrwsLspkr
+      L0Nmd96BqnSWYJ0KjAUFeC21menvZve3BJu0bBeCXhUGNH+r+bqafCWfebtqYWzr
+      Ng7fNZlqyz4FmjFkq6Fd5hfHXYzUi4xX8N+lYfSBYfSbLal6QwNFtHUc8dk3x9W4
+      Qoj5/PHsiL4IBVzZqQnIGSPqYr0gW60vUPPcdEBnv55mCe+IrsvnYzVfY+poNbUN
+      0uklkFz9gfvEMmMORrcq0aKImmh1j1/6bhRVAgMBAAGjUzBRMB0GA1UdDgQWBBSL
+      N+GcLl8aZvcn7BET1aqK0i1DiTAfBgNVHSMEGDAWgBSLN+GcLl8aZvcn7BET1aqK
+      0i1DiTAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQB3qL4JaC27
+      8n98Ti9xbc1ARQptxXwHP2Ef2W23rMSPL+cyJ2VkZB4v1xXaznT5YL2g5Qr/U4aK
+      y8n3Vl52FlDVhEWTquEScIlhomnbPzCJR7DKI75FHeukyYIDl/5YdeydWr/y+G44
+      z+AOgNMfCz7AX/OLKBMqagnf8Z5R6/Rd6FV33lOYcu3CbRi52ZDhtCC5pL3Xj235
+      DllhXh/U7uvsOXwwgAfeufCiU+qBQuBf7QiSZycFs5+Ap55pxQogtCNCeAfQUyKW
+      xpXX4zixBHvo6KoXMz6ASgk+hO5wMxyPVr2HOx5a8tBHn3iLX/J+2HEHBbCw36GF
+      5dzYSA9wVADX
+      -----END CERTIFICATE-----
+
