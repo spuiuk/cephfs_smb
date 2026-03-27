@@ -50,31 +50,26 @@ VAGRANT_BOX=centos/stream10
 
 Create `extra_vars.yml` for settings that affect Ansible provisioning. Copy `extra_vars.yml.example` as a starting point. This file is gitignored.
 
-#### DEVEL_IMAGE:
-Use this variable to point to the container image to use. Use this when testing out your own container image of a ceph build.
+#### CUSTOM_IMAGE:
 
-```yaml
-DEVEL_IMAGE: "quay.io/spuiuk/ceph_test:latest"
+Use this image to set the repo, registry credentials and the container images to use in the installation. Additional information is available in the [extra_vars.yml.example](extra_vars.yml.example) file.
+
+Example:
 ```
-
-#### SMB_IMAGE:
-Use this variable to point to the samba container used for the SMB service. Use it when testing your own samba container build.
-
-```yaml
-SMB_IMAGE: "quay.io/spuiuk/smb_test:latest"
-```
-
-#### Setting up downstream:
-
-To test downstream, set the following variables in `extra_vars.yml`:
-
-#### CEPH_REPO:
-The URL to the repo file for the downstream build.
-
-#### CP_PASSWD:
-The production entitlement key. Follow instructions [here](https://github.ibm.com/alchemy-registry/image-iam/blob/master/obtaining_entitlement.md).
-
-```yaml
-CEPH_REPO: "https://xxx.yyy.zzz.com/pub/abc/defg/test-rhel9.repo"
-CP_PASSWD: "aaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbccccccc..."
+CUSTOM_VERSION:
+  registry:
+    url: "quay.io"
+    username: "user1"
+    password: "aaaaaaaaaaaaaaabbbbccccccccccccccc"
+  version: my_version
+  repositories:
+    default:
+      rhel-9: https://example.com/path/to/9/repo.repo
+      rhel-10: https://example.com/path/to/10/repo.repo
+  images:
+    ceph-base: quay.io/youruser/ceph-9-rhel9:yourtag
+    grafana_image: quay.io/youruser/grafana-rhel10:yourtag
+    prometheus_image: quay.io/youruser/prometheus:yourtag
+    samba_metrics_image: quay.io/youruser/samba-metrics-rhel10:yourtag
+    samba_image: quay.io/youruser/samba-server-rhel10:yourtag
 ```
