@@ -1,4 +1,12 @@
-# grpcurl -cacert certs/ca/ca.crt -cert certs/mycephfs11/mycephfs11.crt -key certs/mycephfs11/mycephfs11.key 192.168.145.11:54445 SambaControl/Status
+# Requirements: Install grpcurl as client to obtain information
+# curl -LO   https://github.com/fullstorydev/grpcurl/releases/download/v1.8.9/grpcurl_1.8.9_linux_x86_64.tar.gz
+# tar -xvzf grpcurl_1.8.9_linux_x86_64.tar.gz
+# chmod +x grpcurl
+# sudo mv grpcurl /usr/local/bin/
+# grpcurl --version
+
+# Test:
+# grpcurl -cacert ~/resources/certs/ca/ca.crt -cert ~/resources/certs/mycephfs11/mycephfs11.crt -key ~/resources/certs/mycephfs11/mycephfs11.key 192.168.145.11:54445 SambaControl/Status
 resources:
   - resource_type: ceph.smb.cluster
     cluster_id: mysmb
@@ -10,7 +18,9 @@ resources:
       cert: {ref: cert1}
       key: {ref: key1}
       ca_cert: {ref: cacert1}
-    placement: { label: "mysmb" }
+    placement:
+      hosts:
+        - "mycephfs11"
 
   - resource_type: ceph.smb.usersgroups
     users_groups_id: ug1
