@@ -17,6 +17,10 @@
 - ansible.builtin.set_fact:
     EXTRA_INSTALL: ""
 
+- name: Disable monitoring
+  ansible.builtin.set_fact:
+    EXTRA_INSTALL: "{{ EXTRA_INSTALL }} --skip-monitoring-stack"
+
 - name: check for singlehost install
   ansible.builtin.set_fact:
     EXTRA_INSTALL: "{{ EXTRA_INSTALL }} --single-host-defaults"
