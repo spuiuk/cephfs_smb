@@ -3,20 +3,35 @@
   ansible.builtin.import_role:
     name: import_config
 
+- block:
+  - name: RHEL based distros should have custom repo set
+    ansible.builtin.fail:
+      msg: "RHEL based distros should have custom ceph repo set"
+    when: CEPH_REPO is undefined
+  - name: Enable extra repos
+    ansible.builtin.shell:
+      cmd: |
+        subscription-manager register
+        subscription-manager refresh
+        subscription-manager repos --enable=rhel-9-for-x86_64-baseos-rpms --enable=rhel-9-for-x86_64-appstream-rpms
+  when: DISTRO == "rhel-9" or DISTRO == "rhel-10"
+
 - name: Update hosts
   ansible.builtin.dnf:
     name: "*"
     state: latest
 
+- name: Install Ceph Custom Repo
+  ansible.builtin.shell: dnf config-manager --add-repo {{ CEPH_REPO }}
+  when: CEPH_REPO is defined and CEPH_REPO|length > 0
+
+# This is not available for RHEL based systems
 - name: Install Ceph Tentacle Repo
   ansible.builtin.dnf:
     name: centos-release-ceph-tentacle
     state: present
   when: CEPH_REPO is undefined or CEPH_REPO|length == 0
 
-- name: Install Ceph Custom Repo
-  ansible.builtin.shell: dnf config-manager --add-repo {{ CEPH_REPO }}
-  when: CEPH_REPO is defined and CEPH_REPO|length > 0
 
 - name: Create parent directory for IBM license file
   ansible.builtin.file:
@@ -34,7 +49,7 @@
         name:
           - epel-release
         state: present
-  when: DISTRO == "rhel-10"
+  when: DISTRO == "centos-10"
 
 - name: Install required packages on hosts
   ansible.builtin.dnf:
@@ -45,7 +60,13 @@
       - ceph-common
       - python3-jinja2
       - lvm2
+      - firewalld
     state: latest
+
+- name: Start firewalld service
+  ansible.builtin.service:
+    name: firewalld
+    state: started
 
 - name: Update ssh config
   ansible.builtin.copy:
