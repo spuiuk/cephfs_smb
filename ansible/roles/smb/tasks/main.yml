@@ -5,10 +5,6 @@
     - samba-client
     state: present
 
-- name: Set custom Samba image if set
-  ansible.builtin.shell: ceph config set mgr mgr/cephadm/container_image_samba {{ SMB_IMAGE }}
-  when: SMB_IMAGE is defined and SMB_IMAGE | length > 0
-
 - name: Create smbshares subvolume
   ansible.builtin.shell: ceph fs subvolume create mycephfs smbshares --mode 0777
 
