@@ -17,6 +17,10 @@
 - ansible.builtin.set_fact:
     EXTRA_INSTALL: ""
 
+- name: Disable license checking
+  ansible.builtin.set_fact:
+    EXTRA_INSTALL: "{{ EXTRA_INSTALL }} --automatically-accept-license"
+
 - name: Disable monitoring
   ansible.builtin.set_fact:
     EXTRA_INSTALL: "{{ EXTRA_INSTALL }} --skip-monitoring-stack"
