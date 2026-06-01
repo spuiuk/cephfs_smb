@@ -68,7 +68,7 @@
   args:
     creates: /etc/ceph/ceph.conf
   vars:
-    HOST_IP: "{{ ansible_default_ipv4.address }}"
+    HOST_IP: "{{ ansible_facts['default_ipv4']['address'] }}"
 
 - name: Set mon_data_avail_warn to low number to avoid warnings
   ansible.builtin.shell: ceph config set global mon_data_avail_warn 10
