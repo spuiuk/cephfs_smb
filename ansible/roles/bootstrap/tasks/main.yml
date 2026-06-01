@@ -17,9 +17,15 @@
 - ansible.builtin.set_fact:
     EXTRA_INSTALL: ""
 
-- name: Disable license checking
+- name: check if parameter automatically-accept-license  will work
+  ansible.builtin.shell: cephadm bootstrap --help | grep -q automatically-accept-license
+  register: ACCEPT_LICENSE_AVAILABLE
+  ignore_errors: true
+
+- name: Disable license checking using parameter if available
   ansible.builtin.set_fact:
     EXTRA_INSTALL: "{{ EXTRA_INSTALL }} --automatically-accept-license"
+  when: ACCEPT_LICENSE_AVAILABLE.rc == 0
 
 - name: Disable monitoring
   ansible.builtin.set_fact:
