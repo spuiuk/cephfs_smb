@@ -29,7 +29,7 @@
     - name: Check if custom Ceph repo is to be used
       ansible.builtin.set_fact:
         CEPH_REPO: "{{ CUSTOM_VERSION['repositories']['default'][DISTRO_REPO] }}"
-      when: CUSTOM_VERSION['repositories']['default'][DISTRO] is defined
+      when: CUSTOM_VERSION['repositories']['default'][DISTRO_REPO] is defined
 
     - name: Check if custom images are to be set
       ansible.builtin.set_fact:
