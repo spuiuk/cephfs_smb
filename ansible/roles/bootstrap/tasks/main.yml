@@ -113,6 +113,10 @@
     label: "{{ item.key }}"
   when: CUSTOM_IMAGES is defined
 
+- name: Disable call home module - Ignore errors when command not supported
+  ansible.builtin.shell: ceph orch deny call-home-enabled
+  ignore_errors: true
+
 - name: Create OSD on all available devices
   ansible.builtin.shell: ceph orch apply osd --all-available-devices
 
