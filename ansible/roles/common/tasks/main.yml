@@ -25,6 +25,35 @@
   ansible.builtin.shell: dnf config-manager --add-repo {{ CEPH_REPO }}
   when: CEPH_REPO is defined and CEPH_REPO|length > 0
 
+- block:
+  - name: Set CEPH_REPO for upstream
+    ansible.builtin.set_fact:
+      ceph_shaman_distro: >-
+        {{ ('rocky' if ansible_facts["distribution_major_version"] | int >= 10
+           else ansible_facts["distribution_major_version"]) ~ '/' ~ ansible_facts["distribution_major_version"] }}
+  - name: Build latest Shaman branch
+    ansible.builtin.uri:
+      url: "https://shaman.ceph.com/api/search?\
+            project=ceph&\
+            ref={{ CEPH_BRANCH }}&\
+            flavor=default&\
+            status=ready&\
+            distros={{ ceph_shaman_distro }}/x86_64&\
+            sha1=latest"
+      return_content: true
+    register: ceph_shaman
+  - name: Create ceph repo
+    ansible.builtin.yum_repository:
+      name: "ceph-{{ CEPH_BRANCH }}-{{ ceph_shaman.json[0].sha1 }}"
+      baseurl: "{{ ceph_shaman.json[0].url }}/x86_64"
+      description: "Ceph {{ CEPH_BRANCH }} ({{ ceph_shaman.json[0].sha1 }})"
+      enabled: true
+      gpgcheck: false
+      state: present
+  vars:
+    CEPH_BRANCH: "main"
+  when: CEPH_REPO is undefined
+
 # This is not available for RHEL based systems
 - name: Install Ceph Tentacle Repo
   ansible.builtin.dnf:

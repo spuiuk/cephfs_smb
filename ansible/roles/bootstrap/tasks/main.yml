@@ -51,19 +51,6 @@
     CEPHADM_IMAGE: "--image {{ CUSTOM_IMAGES['ceph-base'] }}"
   when: CUSTOM_IMAGES["ceph-base"] is defined
 
-- name: Update cephadm repo and bootstrap
-  when: CEPH_REPO is undefined or CEPH_REPO | length == 0
-  block:
-    - name: Set repo to main
-      ansible.builtin.shell: cephadm add-repo --dev main
-
-- name: Update to latest cephadm packages
-  ansible.builtin.dnf:
-    name:
-    - cephadm
-    - ceph-common
-    state: latest
-
 - name: Generate bootstrap.conf file on bootstrap host
   when: CUSTOM_IMAGES is defined
   block:
