@@ -2,6 +2,12 @@
 # Copy this file to extra_vars.yml and set values as needed.
 # extra_vars.yml is gitignored - do not commit it.
 
+# Set the variable if you do not wish the update the hosts
+# when bringing up the cluster
+# This can speed up the process of bringing up the cluster and
+# is usefull when testing. The default is to not set this variable.
+# NO_UPDATE_HOSTS: 1
+
 # Set the branch for the upstream repository
 # by default CEPH_REPO_BRANCH is set to main
 # Use this when you need to use a stable branch upstream

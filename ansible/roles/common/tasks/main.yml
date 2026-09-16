@@ -20,6 +20,7 @@
   ansible.builtin.dnf:
     name: "*"
     state: latest
+  when: NO_UPDATE_HOSTS is undefined
 
 - name: Install Ceph Custom Repo
   ansible.builtin.shell: dnf config-manager --add-repo {{ CEPH_REPO }}

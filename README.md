@@ -50,6 +50,16 @@ VAGRANT_BOX=centos/stream10
 
 Create `extra_vars.yml` for settings that affect Ansible provisioning. Copy `extra_vars.yml.example` as a starting point. This file is gitignored.
 
+
+#### NO_UPDATE_HOSTS:
+
+Set this variable when you do not wish to update hosts when bringing up the cluster. This can be useful during testing when you would like to speed up the installation of the cluster.
+
+Example:
+```
+NO_UPDATE_HOSTS: 1
+```
+
 #### CEPH_REPO_BRANCH:
 
 Use this variable to set the branch to use on the upstream Ceph yum repository. This is to be used when an upstream stable branch is required to be installed. By default, it is set to "main".
