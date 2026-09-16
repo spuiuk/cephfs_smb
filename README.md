@@ -50,6 +50,15 @@ VAGRANT_BOX=centos/stream10
 
 Create `extra_vars.yml` for settings that affect Ansible provisioning. Copy `extra_vars.yml.example` as a starting point. This file is gitignored.
 
+#### CEPH_REPO_BRANCH:
+
+Use this variable to set the branch to use on the upstream Ceph yum repository. This is to be used when an upstream stable branch is required to be installed. By default, it is set to "main".
+
+Example:
+```
+CEPH_REPO_BRANCH: "umbrella"
+```
+
 #### CUSTOM_IMAGE:
 
 Use this image to set the repo, registry credentials and the container images to use in the installation. Additional information is available in the [extra_vars.yml.example](extra_vars.yml.example) file.

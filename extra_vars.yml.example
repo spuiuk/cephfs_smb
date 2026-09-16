@@ -2,6 +2,11 @@
 # Copy this file to extra_vars.yml and set values as needed.
 # extra_vars.yml is gitignored - do not commit it.
 
+# Set the branch for the upstream repository
+# by default CEPH_REPO_BRANCH is set to main
+# Use this when you need to use a stable branch upstream
+# CEPH_REPO_BRANCH: "umbrella"
+
 # Custom repo and container images to use.
 # All items on this list are optional and used only if set.
 # This is used when working with custom images or attempting

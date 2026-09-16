@@ -23,6 +23,10 @@
     DISTRO: "rhel-9"
     DISTRO_REPO: "rhel-9"
 
+- name: Set default CEPH_REPO_BRANCH variable if set
+  ansible.builtin.set_fact:
+    CEPH_REPO_BRANCH: "main"
+  when: CEPH_REPO_BRANCH is undefined
 - name: Check if CUSTOM_VERSION is set
   when: CUSTOM_VERSION is defined
   block:
